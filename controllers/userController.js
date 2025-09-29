@@ -128,7 +128,7 @@ exports.signIn = async (req,res)=>{
         const passwordCorrect = await bcrypt.compare(password, user.password)
         if (passwordCorrect === false) {
             return res.status(400).json({
-                message: `invalid credentials`
+                message: `Incorrect password                                                                                                                                                                    `
             })
         }    
         const token = jwt.sign({
@@ -222,9 +222,9 @@ exports.resetPossword = async (req,res) =>{
 }
 exports.changePassword = async (req, res) => {
     try {
-        const {token, currentPassword, newPassword, confirmPassword} = req.body
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    const user = await usermodel.findById(decoded.id)
+        const decodedId = req.user.id
+        const { currentPassword, newPassword, confirmPassword} = req.body
+        const user = await usermodel.findById(decodedId)
     if (!user) {
         return res.status(400).json({
             message: `user not found`
@@ -250,6 +250,19 @@ exports.changePassword = async (req, res) => {
         message: `password changed successfully`
     })  
 
+    } catch (error) {
+        res.status(500).json({
+            message: error.message
+        })
+    }
+}
+exports.getAll = async (req,res)=>{
+    try {
+        const users = await usermodel.find()
+        res.status(200).json({
+            message: `users fetched successfully`,
+            data: users
+        })
     } catch (error) {
         res.status(500).json({
             message: error.message

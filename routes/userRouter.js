@@ -1,4 +1,5 @@
-const { signUp, verifyUser, resendVerification, signIn, forgotPassword, resetPossword, changePassword } = require('../controllers/userController')
+const { signUp, verifyUser, resendVerification, signIn, forgotPassword, resetPossword, changePassword, getAll } = require('../controllers/userController')
+const { authenticate } = require('../middleware/Authenticate')
 
 const router = require('express').Router()
 
@@ -14,5 +15,7 @@ router.post('/user/forgot/password', forgotPassword)
 
 router.post('/users/reset/password/:token', resetPossword)
 
-router.post('/users/change/password', changePassword)
+router.get('/users', authenticate, getAll)
+
+router.patch('/users/change/password',authenticate, changePassword)
 module.exports = router
